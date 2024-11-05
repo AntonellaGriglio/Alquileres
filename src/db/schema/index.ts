@@ -1,2 +1,12 @@
 // export * from each of the files in the schema directory
-export * from "./example"
+export * from "./alojamiento"
+export * from "./cliente"
+export * from "./complejo_usuario"
+export * from "./complejo"
+export * from "./cuenta"
+export * from "./estadia"
+export * from "./forma_pago"
+export * from "./pago"
+export * from "./tipo_pago"
+export * from "./tipo_usuario"
+export * from "./usuario"

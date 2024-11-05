@@ -1,22 +1,33 @@
 import Link from "next/link"
+import { Car } from "lucide-react"
 
-import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 
-export default function IndexPage() {
+export default function LandingPage() {
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Built with Radix UI and Tailwind CSS.{" "}
-          <br className="hidden sm:inline" />
-          Drizzle ORM + MySQL/Planetscale Database
-        </h1>
-        <p className="max-w-[700px] text-lg text-muted-foreground">
-          Next.js clean starter template with Tailwind CSS, TypeScript, ESLint,
-          Prettier, and DrizzleORM.
-        </p>
-      </div>
-    </section>
+    <div className="flex flex-col min-h-screen bg-background">
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                  Gestión de Estacionamiento
+                </h1>
+                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                  Una manera eficiente y transparente de gestionar el
+                  estacionamiento de turistas en tu municipio/comuna.
+                </p>
+              </div>
+              <div className="space-x-4">
+                <Link href="/auth/login" className={buttonVariants()}>
+                  Iniciar sesión
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   )
 }

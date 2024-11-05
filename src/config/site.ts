@@ -1,13 +1,8 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Next.js",
+  name: "Alquileres Sierras de Cordoba",
   description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
-  mainNav: [
-    {
-      title: "Home",
-      href: "/",
-    },
-  ],
+    "App de gestión de estacionamiento para municipios y comunas turísticas.",
+  mainNav: [],
 }
