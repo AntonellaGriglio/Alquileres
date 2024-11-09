@@ -5,6 +5,6 @@ export const usuario = pgTable("usuario", {
     id: varchar("id").primaryKey(),
     idTipo: varchar("id_tipo"),
     nombreCompleto: varchar("nombre_completo"),
-    usuario: integer("usuario"),
+    nombreUsuario: varchar("nombreUsuario"),
     contrasenia: varchar("contrasenia")
   })

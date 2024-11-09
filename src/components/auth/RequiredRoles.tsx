@@ -1,24 +1,24 @@
-"use client"
+'use client'
 
 import React, { PropsWithChildren } from "react"
 import { useSession } from "next-auth/react"
 
-import { ROLES_USUARIO } from "@/lib/Auth/types/roles-usuario"
-
-type RequiredRolesProps = {
-  roles: ROLES_USUARIO[]
+type RequiredTipoProps = {
+  idTipo: string
 }
 
-const RequiredRoles: React.FC<PropsWithChildren<RequiredRolesProps>> = ({
+const RequiredTipo: React.FC<PropsWithChildren<RequiredTipoProps>> = ({
   children,
-  roles,
+  idTipo,
 }) => {
   const { data } = useSession()
 
-  if (!data?.user.roles.some((role) => roles.includes(role))) {
+  // Verifica si el usuario tiene el idTipo esperado
+  if (data?.user.idTipo !== idTipo) {
     return null
   }
-  return children
+
+  return <>{children}</>  // Muestra los hijos si el idTipo es el esperado
 }
 
-export default RequiredRoles
+export default RequiredTipo

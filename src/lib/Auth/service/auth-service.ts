@@ -7,24 +7,34 @@ import { LoginData } from "../schemas/login-schema"
 
 export const loginUsuario = async (data: LoginData) => {
   const usuarioEncontrado = await db.query.usuario.findFirst({
-    where: eq(usuario.nombreCompleto, data.nombreUsuario),
-    with: { roles: true },
+    where: eq(usuario.nombreUsuario, data.nombreUsuario),
   })
+console.log('user',usuarioEncontrado)
 
-  if (!usuarioEncontrado) return null
+if (!usuarioEncontrado || !usuarioEncontrado.contrasenia) {
+  console.log("Usuario no encontrado o sin contraseña");
+  return null;
+}
+if (!usuarioEncontrado.idTipo) {
+  console.log("Tipo de usuario no encontrado");
+  return null;
+}
 
-  const sonContraseniasIguales = compare(
+  const sonContraseniasIguales = await compare(
       data.contrasenia,
       usuarioEncontrado.contrasenia
-  )
+  );
+  
 
   if (sonContraseniasIguales) {
     return {
       id: usuarioEncontrado.id,
       nombreUsuario: usuarioEncontrado.nombreCompleto,
-      roles: usuarioEncontrado.roles.map((rol) => rol.rol),
+      idTipo : usuarioEncontrado.idTipo
+     
     }
   }
 
-  return null
+  return usuarioEncontrado 
+
 }

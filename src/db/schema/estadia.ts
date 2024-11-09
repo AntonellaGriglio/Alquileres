@@ -4,12 +4,13 @@ import { cliente } from "./cliente";
 import { estadoEstadia } from "./estado_estadia";
 import { alojamiento } from "./alojamiento";
 import { usuario } from "./usuario";
+import { getIdGenerator } from "../utils/id-generator";
 
 export const estadia = pgTable("estadia", {
     id: varchar("id").primaryKey(),
     idCliente: varchar("id_cliente"),
     fechaCreacion: timestamp("fecha_creacion").defaultNow(),
-    idEstado: integer("id_estado"),
+    idEstado: varchar("id_estado"),
     fechaIngreso: timestamp("fecha_ingreso"),
     fechaEgreso: timestamp("fecha_egreso"),
     cantPersonas: integer("cant_personas"),
@@ -26,3 +27,5 @@ export const estadia = pgTable("estadia", {
     alojamiento: one(alojamiento, { fields: [estadia.idAlojamiento], references: [alojamiento.id] }),
     usuario: one(usuario, { fields: [estadia.idUsuario], references: [usuario.id] }),
   }));
+
+  export const generarIdEstadia = getIdGenerator("EST")

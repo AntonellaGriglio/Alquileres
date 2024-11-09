@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import * as React from "react"
 import Link from "next/link"
@@ -7,7 +7,6 @@ import { signOut, useSession } from "next-auth/react"
 
 import { NavItem } from "@/types/nav"
 import { siteConfig } from "@/config/site"
-import { ROLES_USUARIO } from "@/lib/Auth/types/roles-usuario"
 import { cn } from "@/lib/utils"
 
 import { Button, buttonVariants } from "../ui/button"
@@ -21,24 +20,23 @@ import {
 } from "../ui/sheet"
 
 interface MainNavProps {
-  items?: NavItem[]
+  items?: NavItem[] // Propiedad opcional que representa los elementos de navegación
 }
 
 export function MainNav({ items }: MainNavProps) {
-  const { data } = useSession()
+  const { data } = useSession() // Se obtiene la sesión del usuario
+  
+  // Si no hay sesión, no renderizamos nada
+  if (!data?.user) return null
 
   const navItems = [...(items ?? [])]
-  if (data?.user.id) {
-    if (data?.user.roles.some((rol) => rol === ROLES_USUARIO.Admin)) {
-      navItems.push({ title: "Usuarios", href: "/usuarios" })
-      navItems.push({ title: "Zonas", href: "/zonas" })
-      navItems.push({ title: "Reportes", href: "/reportes" })
-    }
 
-    if (data?.user.roles.some((rol) => rol === ROLES_USUARIO.Cajero)) {
-      navItems.push({ title: "Nuevo Pago", href: "/pagos" })
-    }
-
+  // Verificamos el idTipo del usuario para determinar qué menú mostrar
+  const idTipo = data.user.idTipo
+  
+  // Lógica para mostrar diferentes opciones según el tipo de usuario
+  if (idTipo === "1") {
+    // Si el usuario es admin, se puede agregar lógica o menú especial
   }
 
   return (
