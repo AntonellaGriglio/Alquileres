@@ -1,26 +1,38 @@
 import { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-
 import { loginUsuario } from "@/lib/Auth/service/auth-service"
 
 export const authOptions: AuthOptions = {
   callbacks: {
-    async session({ session, user, token }) {
-      // Assign the userid and role from the jwt callback below
-      if (session?.user) {
-        session.user.id = token.id as unknown as string
-        session.user.nombreUsuario = token.nombreUsuario as unknown as string
-        session.user.idTipo = token.idTipo as unknown as string
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session?.selectedComplejo) {
+        // Si es una actualización de token, actualizamos el complejo seleccionado
+        token.selectedComplejo = session.selectedComplejo;
       }
-      return session
-    },
-    async jwt({ token, user }) {
+
       if (user) {
-        token.id = user.id
-        token.nombreUsuario = user.nombreUsuario
-        token.idTipo = user.idTipo
+        token.id = user.id;
+        token.nombreUsuario = user.nombreUsuario;
+        token.idTipo = user.idTipo;
+        token.complejos = user.complejos || [];
+        // Asegúrate de que selectedComplejo sea un string o un valor predeterminado
+        token.selectedComplejo = user.selectedComplejo ? String(user.selectedComplejo) : '';
       }
-      return token
+
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = {
+        ...session.user,
+        id: token.id,
+        nombreUsuario: token.nombreUsuario,
+        idTipo: token.idTipo,
+        complejos: token.complejos || [],
+        // Asegúrate de que selectedComplejo sea un string
+        selectedComplejo: typeof token.selectedComplejo === 'string' ? token.selectedComplejo : '',
+      };
+
+      return session;
     },
   },
   providers: [
@@ -36,31 +48,32 @@ export const authOptions: AuthOptions = {
         },
         contrasenia: { label: "Contraseña", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const nombreUsuario = credentials?.nombreUsuario;
         const contrasenia = credentials?.contrasenia;
-      
+
         if (!nombreUsuario || !contrasenia) return null;
-      
+
         const user = await loginUsuario({
           nombreUsuario,
           contrasenia,
         });
-      
+
         if (!user) return null;
-      
-        // Asegúrate de que las propiedades sean estrictamente `string` y no `null`
+
+        // Asegúrate de devolver un objeto con las propiedades necesarias
         return {
-          id: user.id,
-          nombreUsuario: user.nombreUsuario ?? "", // Proporciona un valor por defecto si es `null`
-          idTipo: user.idTipo ?? "", // Proporciona un valor por defecto si es `null`
+          id: user.usuario.id,
+          nombreUsuario: user.usuario.nombreUsuario ?? "", // Valor por defecto si es `null`
+          idTipo: user.usuario.tipo?.id ?? "",
+          complejos: user.complejos || [],
+          selectedComplejo: user.selectedComplejo ? String(user.selectedComplejo) : '', // Convertir a string
         };
       },
-      
     }),
   ],
   pages: {
     signIn: "/auth/login",
-    error: "/auth/login",
+    error: "/auth/login", // Personaliza esta página si lo necesitas
   },
-}
+};

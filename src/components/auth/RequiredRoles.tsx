@@ -2,22 +2,22 @@
 
 import React, { PropsWithChildren } from "react"
 import { useSession } from "next-auth/react"
+import { TIPOS_USUARIOS } from "@/lib/Auth/types/tipos-usuarios"
 
 type RequiredTipoProps = {
-  idTipo: string
+  tipos: TIPOS_USUARIOS[]
 }
 
 const RequiredTipo: React.FC<PropsWithChildren<RequiredTipoProps>> = ({
   children,
-  idTipo,
+  tipos,
 }) => {
   const { data } = useSession()
 
   // Verifica si el usuario tiene el idTipo esperado
-  if (data?.user.idTipo !== idTipo) {
+  if (!data?.user?.idTipo){
     return null
   }
-
   return <>{children}</>  // Muestra los hijos si el idTipo es el esperado
 }
 

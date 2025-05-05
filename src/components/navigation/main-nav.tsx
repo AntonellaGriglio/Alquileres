@@ -36,7 +36,8 @@ export function MainNav({ items }: MainNavProps) {
   
   // Lógica para mostrar diferentes opciones según el tipo de usuario
   if (idTipo === "1") {
-    // Si el usuario es admin, se puede agregar lógica o menú especial
+    navItems.push({ title: "Nueva Estadia", href: "/estadia/registrar" })
+    navItems.push({ title: "Calendario", href: "/estadia/calendario" })
   }
 
   return (

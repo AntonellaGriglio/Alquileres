@@ -3,8 +3,8 @@ import { z } from "zod";
 export const estadiaSchema = z.object({
     idCliente: z.string(),
     idEstado: z.string(),
-    fechaIngreso: z.date(),
-    fechaEgreso: z.date(),
+    fechaIngreso: z.string(),
+    fechaEgreso: z.string(),
     cantPersonas: z.number(),
     desayuno: z.boolean(),
     importeTotal: z.number(),

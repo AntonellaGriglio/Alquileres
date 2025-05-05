@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth"
 
 import UnauthorizedPage from "./Unauthorized"
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth-options"
+import { TIPOS_USUARIOS } from "@/lib/Auth/types/tipos-usuarios"
 
 type ASYNC_COMPONENT = (props: any) => Promise<JSX.Element>
 
@@ -15,8 +16,10 @@ export const withAuth = (
 ): ((props: any) => Promise<JSX.Element>) => {
   return async (props: any): Promise<JSX.Element> => {
     const session = await getServerSession(authOptions)
-    const userIdTipo = session?.user?.idTipo // Obtener el idTipo del usuario
-    if (userIdTipo === idTipo) {
+    const userTipo = session?.user?.idTipo
+    console.log(userTipo)
+    if (userTipo === idTipo) {
+      console.log('user tipo entro',userTipo)
       // Si el usuario tiene el idTipo requerido, ejecutar el componente original con las props
       return Component(props)
     } else {

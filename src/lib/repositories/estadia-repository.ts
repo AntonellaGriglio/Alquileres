@@ -1,11 +1,13 @@
-import { and, cliente, DatabaseConnection, eq, estadia, estadoEstadia, generarIdCliente, generarIdEstadia, generarIdPago, pago } from "@/db";
+import { alojamiento, and, cliente, complejo, DatabaseConnection, eq, estadia, estadoEstadia, generarIdCliente, generarIdEstadia, generarIdPago, gte, lte, pago } from "@/db";
 import { Estadia } from "../types/estadia-types";
 import { Cliente } from "../types/cliente-types";
 import { Pago } from "../types/pago-types";
 
 export const registrarEstadia = async (
     db: DatabaseConnection,
-    estadiaData: Estadia) =>{
+    estadiaData: Estadia,
+idCliente:string) =>{
+    console.log('estadia',estadiaData)
         const nuevoId = generarIdEstadia();
         return await db
         .insert(estadia)
@@ -13,17 +15,17 @@ export const registrarEstadia = async (
             id:nuevoId,
             cantPersonas : estadiaData.cantPersonas,
             cantNoches : estadiaData.cantNoches,
-            fechaEgreso: estadiaData.fechaEgreso,
-            fechaIngreso: estadiaData.fechaIngreso,
+            fechaEgreso: new Date(estadiaData.fechaEgreso),
+            fechaIngreso: new Date(estadiaData.fechaIngreso),
             importeTotal: estadiaData.importeTotal,
             idAlojamiento: estadiaData.idAlojamiento,
             desayuno: estadiaData.desayuno,
-            idCliente: estadiaData.idCliente,
+            idCliente: idCliente,
             idEstado: estadiaData.idEstado,
             idUsuario: estadiaData.idUsuario,
         })
         .returning()
-    }
+    } 
 
     
 export const registrarCliente = async (
@@ -52,7 +54,15 @@ export const registrarCliente = async (
             columns: {id:true}
         })
     }
-       
+    export const buscarAlojamientos = async (
+        idComplejo: string,
+        db: DatabaseConnection
+      ) => {
+        return await db.query.alojamiento.findFirst({
+          where: and(eq(alojamiento.idComplejo, idComplejo)),
+          columns: { id: true },
+        })
+      } 
 export const registrarPago = async (
     db: DatabaseConnection,
     pagoData: Pago) =>{
@@ -69,4 +79,37 @@ export const registrarPago = async (
         })
         .returning()
     }
-    
+
+    export const obtenerEstados = async (db: DatabaseConnection) => {
+        return await db.query.estadoEstadia.findMany()
+      }
+
+         
+      export const obtenerComplejoId = async (db: DatabaseConnection, complejoName: string) => {
+        return await db.query.complejo.findFirst({
+            where: and(eq(complejo.nombre, complejoName)),
+            columns:{id:true}
+        })
+      }
+      export const obtenerAlojamientos = async (db: DatabaseConnection, idComplejo: string) => {
+        return await db.query.alojamiento.findMany({
+            where: and(eq(alojamiento.idComplejo,idComplejo))
+        })
+      }
+
+
+      
+export const obtenerEstadiasPorMes = async (db: DatabaseConnection, inicioMes: Date, finMes: Date) => {
+    return await db.query.estadia.findMany({
+      where: and(
+        gte(estadia.fechaIngreso, inicioMes),
+        lte(estadia.fechaEgreso, finMes)
+      ),
+      with: {
+        cliente: true,
+        estado: true,
+        alojamiento: true,
+        usuario: true,
+      },
+    });
+  };
